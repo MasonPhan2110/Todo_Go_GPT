@@ -14,8 +14,8 @@ CREATE TABLE "todo" (
     "description" varchar NOT NULL,
     "update_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
     "created_at" timestamptz NOT NULL DEFAULT (now())
-)
+);
 
-CREATE INDEX ON "todo" ("user_id")
+CREATE INDEX ON "todo" ("user_id");
 
-ALTER TABLE "todo" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id")
+ALTER TABLE "todo" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
