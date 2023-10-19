@@ -8,3 +8,8 @@ migrateup:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/todo_gpt?sslmode=disable" -verbose up
 migratedown:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/todo_gpt?sslmode=disable" -verbose down
+sqlc:
+	sqlc generate
+sqlc_window: 
+	docker run --rm -v ${PWD}:/src -w /src kjconroy/sqlc generate
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc sqlc_window
