@@ -26,7 +26,7 @@ type CreateUserParams struct {
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.HashedPassword, arg.FullName)
+	row := q.db.QueryRowContext(ctx, createUser, arg.Username, arg.HashedPassword, arg.FullName)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -45,7 +45,7 @@ WHERE username = $1 LIMIT 1
 `
 
 func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
-	row := q.db.QueryRow(ctx, getUser, username)
+	row := q.db.QueryRowContext(ctx, getUser, username)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -65,7 +65,7 @@ FOR NO KEY UPDATE
 `
 
 func (q *Queries) GetUserForUpdate(ctx context.Context, username string) (User, error) {
-	row := q.db.QueryRow(ctx, getUserForUpdate, username)
+	row := q.db.QueryRowContext(ctx, getUserForUpdate, username)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -91,7 +91,7 @@ type UpdateUserHashedPasswordParams struct {
 }
 
 func (q *Queries) UpdateUserHashedPassword(ctx context.Context, arg UpdateUserHashedPasswordParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUserHashedPassword, arg.ID, arg.HashedPassword)
+	row := q.db.QueryRowContext(ctx, updateUserHashedPassword, arg.ID, arg.HashedPassword)
 	var i User
 	err := row.Scan(
 		&i.ID,
