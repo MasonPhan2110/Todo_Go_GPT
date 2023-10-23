@@ -29,3 +29,11 @@ func (s *SqlDB) Init() error {
 
 	return err
 }
+
+func Setup(dbConn setupDB) {
+	if err := dbConn.Init(); err != nil {
+		fmt.Print(err)
+		return
+	}
+	fmt.Println("Connected")
+}
