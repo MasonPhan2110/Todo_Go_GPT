@@ -1,26 +1,4 @@
-definitions:
-  api.user:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
 info:
   contact: {}
-paths:
-  /api/auth:
-    post:
-      parameters:
-      - descreption: user
-        in: body
-        name: user
-        schema:
-          $ref: '#/definitions/api.User'
-      produces:
-      - application/json
-      response: {}
-      summary: Auth
+paths: {}
 swagger: "2.0"
