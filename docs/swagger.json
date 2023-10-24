@@ -1,0 +1,44 @@
+{
+    "swagger" : "2.0",
+    "info": {
+        "contact" : {}
+    },
+    "paths" : {
+        "/api/auth": {
+            "post": {
+                "produces" : [
+                    "application/json"
+                ],
+                "summary": "Auth",
+                "parameters": [
+                    {
+                        "description": "user",
+                        "name": "user",
+                        "in": "body",
+                        "schema": {
+                            "$ref" : "#/definitions/api.User"
+                        }
+                    }
+                ],
+                "response": {}
+            }
+        }
+    },
+    "definitions": {
+        "api.User": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username" : {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
