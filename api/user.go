@@ -132,7 +132,7 @@ func newUserResponse(user db.User) userResponse {
 //	@Failure		400	{object}	utils.HTTPError
 //	@Failure		404	{object}	utils.HTTPError
 //	@Failure		500	{object}	utils.HTTPError
-//	@Success		200	{object}	loginUserResponse
+//	@Success		200	{object}	userResponse
 //	@Router			/user/createuser [post]
 func CreateUser(ctx *gin.Context) {
 	var req createUserRequest

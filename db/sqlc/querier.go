@@ -12,10 +12,17 @@ import (
 
 type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
+	CreateTask(ctx context.Context, arg CreateTaskParams) (Todo, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteAccount(ctx context.Context, id int64) error
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
+	GetTask(ctx context.Context, id int64) (Todo, error)
+	GetTaskForUpdate(ctx context.Context, id int64) (Todo, error)
 	GetUser(ctx context.Context, username string) (User, error)
 	GetUserForUpdate(ctx context.Context, username string) (User, error)
+	ListTasks(ctx context.Context, arg ListTasksParams) ([]Todo, error)
+	UpdateDeadline(ctx context.Context, arg UpdateDeadlineParams) (Todo, error)
+	UpdateStatus(ctx context.Context, arg UpdateStatusParams) (Todo, error)
 	UpdateUserHashedPassword(ctx context.Context, arg UpdateUserHashedPasswordParams) (User, error)
 }
 

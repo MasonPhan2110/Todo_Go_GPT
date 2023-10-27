@@ -26,6 +26,8 @@ type Todo struct {
 	UserID      int64     `json:"user_id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
+	Status      bool      `json:"status"`
+	Deadline    time.Time `json:"deadline"`
 	UpdateAt    time.Time `json:"update_at"`
 	CreatedAt   time.Time `json:"created_at"`
 }
