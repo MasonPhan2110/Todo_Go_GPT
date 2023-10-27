@@ -6,11 +6,12 @@ import (
 )
 
 type App struct {
-	Environment         string
-	JwtSecret           string
-	TokenSymmetricKey   string
-	AccessTokenDuration time.Duration
-	TokenMaker          token.Maker
+	Environment          string
+	JwtSecret            string
+	TokenSymmetricKey    string
+	AccessTokenDuration  time.Duration
+	RefreshTokenDuration time.Duration
+	TokenMaker           token.Maker
 }
 
 type PostgresDB struct {

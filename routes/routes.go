@@ -16,8 +16,8 @@ func AddRoutes(c *gin.Engine) {
 	user := v1.Group("user")
 	{
 		user.POST("login", api.Login)
+		user.POST("create", api.CreateUser)
 	}
 
 	// r.Use(middleware.AuthMiddleware(setting.AppSetting.TokenMaker))
-
 }
