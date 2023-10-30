@@ -67,7 +67,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /api/v1/user/createuser:
+  /api/v1/user/create:
     post:
       consumes:
       - application/json

@@ -136,7 +136,7 @@ func newUserResponse(user db.User) userResponse {
 //	@Failure		404	{object}	utils.HTTPError
 //	@Failure		500	{object}	utils.HTTPError
 //	@Success		200	{object}	userResponse
-//	@Router			/api/v1/user/createuser [post]
+//	@Router			/api/v1/user/create [post]
 func CreateUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
