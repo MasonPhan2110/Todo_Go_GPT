@@ -1,10 +1,10 @@
 package main
 
 import (
+	"MasonPhan2110/Todo_Go_GPT/api"
 	"MasonPhan2110/Todo_Go_GPT/db/setup"
 	db "MasonPhan2110/Todo_Go_GPT/db/sqlc"
 	"MasonPhan2110/Todo_Go_GPT/docs"
-	"MasonPhan2110/Todo_Go_GPT/server"
 	"MasonPhan2110/Todo_Go_GPT/utils"
 	"fmt"
 )
@@ -28,7 +28,7 @@ func main() {
 	utils.Setup()
 
 	dbSql := new(setup.SqlDB)
-	setup.Setup(dbSql, config.DB_DRIVER, config.DBSource)
+	setup.Setup(dbSql, config.DB_DRIVER, config.DB_SOURCE)
 
 	docs.SwaggerInfo.Title = "Swagger Todo List"
 	docs.SwaggerInfo.Description = "Todo List Swagger"
@@ -41,7 +41,7 @@ func main() {
 }
 
 func runGinServer(config utils.Config, store db.Store) {
-	server, err := server.NewServer(config, store)
+	server, err := api.NewServer(config, store)
 	if err != nil {
 		fmt.Println("Cannot create Server: ", err)
 	}

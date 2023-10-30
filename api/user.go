@@ -38,7 +38,7 @@ type loginUserResponse struct {
 //	@Failure		500	{object}	utils.HTTPError
 //	@Success		200	{object}	loginUserResponse
 //	@Router			/api/v1/user/login [post]
-func Login(ctx *gin.Context) {
+func (server *Server) Login(ctx *gin.Context) {
 	var req loginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.NewError(ctx, http.StatusBadRequest, err)
@@ -61,13 +61,13 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, accessPayload, err := setting.AppSetting.TokenMaker.CreateToken(req.Username, setting.AppSetting.AccessTokenDuration)
+	accessToken, accessPayload, err := server.TokenMaker.CreateToken(req.Username, server.Config.AccessTokenDuration)
 	if err != nil {
 		utils.NewError(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
-	refreshToken, refreshPayload, err := setting.AppSetting.TokenMaker.CreateToken(
+	refreshToken, refreshPayload, err := server.TokenMaker.CreateToken(
 		user.Username,
 		setting.AppSetting.RefreshTokenDuration,
 	)
@@ -137,7 +137,7 @@ func newUserResponse(user db.User) userResponse {
 //	@Failure		500	{object}	utils.HTTPError
 //	@Success		200	{object}	userResponse
 //	@Router			/api/v1/user/create [post]
-func CreateUser(ctx *gin.Context) {
+func (server *Server) CreateUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
