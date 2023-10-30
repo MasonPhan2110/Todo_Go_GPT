@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/createuser": {
+        "/api/v1/user/createuser": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -27,11 +27,22 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Create new User to Todo",
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createUserRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.loginUserResponse"
+                            "$ref": "#/definitions/api.userResponse"
                         }
                     },
                     "400": {
@@ -55,7 +66,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/login": {
+        "/api/v1/user/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -67,6 +78,17 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Login to Todo",
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.loginUserRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -97,10 +119,82 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.createUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "full_name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.loginUserRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "api.loginUserResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "access_token_expires_at": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "refresh_token_expires_at": {
+                    "type": "string"
+                },
+                "session_id": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/api.userResponse"
+                }
+            }
+        },
+        "api.userResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password_changed_at": {
                     "type": "string"
                 },
                 "username": {

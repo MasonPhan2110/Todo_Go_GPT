@@ -2,25 +2,24 @@ package setup
 
 import (
 	sqlc "MasonPhan2110/Todo_Go_GPT/db/sqlc"
-	"MasonPhan2110/Todo_Go_GPT/pkg/setting"
 	"database/sql"
 	"fmt"
 )
 
 type setupDB interface {
-	Init() error
+	Init(string, string) error
 }
 
 type SqlDB struct {
 	db *sql.DB
 }
 
-func (s *SqlDB) Init() error {
+func (s *SqlDB) Init(DB_DRIVER, DB_SOURCE string) error {
 	var err error
 
-	s.db, err = sql.Open(setting.PostgresDBSetting.DBDriver, setting.PostgresDBSetting.DBSource)
-	fmt.Println("DB Driver: ", setting.PostgresDBSetting.DBDriver)
-	fmt.Println("DB Source: ", setting.PostgresDBSetting.DBSource)
+	s.db, err = sql.Open(DB_DRIVER, DB_SOURCE)
+	fmt.Println("DB Driver: ", DB_DRIVER)
+	fmt.Println("DB Source: ", DB_SOURCE)
 	if err != nil {
 		return err
 	}
@@ -30,8 +29,8 @@ func (s *SqlDB) Init() error {
 	return err
 }
 
-func Setup(dbConn setupDB) {
-	if err := dbConn.Init(); err != nil {
+func Setup(dbConn setupDB, DB_DRIVER, DB_SOURCE string) {
+	if err := dbConn.Init(DB_DRIVER, DB_SOURCE); err != nil {
 		fmt.Print(err)
 		return
 	}

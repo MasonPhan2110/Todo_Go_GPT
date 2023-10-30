@@ -1,7 +1,56 @@
 definitions:
+  api.createUserRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - full_name
+    - password
+    - username
+    type: object
+  api.loginUserRequest:
+    properties:
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
   api.loginUserResponse:
     properties:
       access_token:
+        type: string
+      access_token_expires_at:
+        type: string
+      refresh_token:
+        type: string
+      refresh_token_expires_at:
+        type: string
+      session_id:
+        type: string
+      user:
+        $ref: '#/definitions/api.userResponse'
+    type: object
+  api.userResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password_changed_at:
         type: string
       username:
         type: string
@@ -18,17 +67,24 @@ definitions:
 info:
   contact: {}
 paths:
-  /user/createuser:
+  /api/v1/user/createuser:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.createUserRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.loginUserResponse'
+            $ref: '#/definitions/api.userResponse'
         "400":
           description: Bad Request
           schema:
@@ -44,10 +100,17 @@ paths:
       summary: Create new User to Todo
       tags:
       - users
-  /user/login:
+  /api/v1/user/login:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.loginUserRequest'
       produces:
       - application/json
       responses:

@@ -11,7 +11,11 @@ import (
 func AddRoutes(c *gin.Engine) {
 	v1 := c.Group("api/v1")
 
-	v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	swagger := v1.Group("swagger")
+	{
+		swagger.GET("*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	user := v1.Group("user")
 	{

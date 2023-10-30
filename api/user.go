@@ -32,11 +32,12 @@ type loginUserResponse struct {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
+//	@Param			request body loginUserRequest true "query params"
 //	@Failure		400	{object}	utils.HTTPError
 //	@Failure		404	{object}	utils.HTTPError
 //	@Failure		500	{object}	utils.HTTPError
 //	@Success		200	{object}	loginUserResponse
-//	@Router			/user/login [post]
+//	@Router			/api/v1/user/login [post]
 func Login(ctx *gin.Context) {
 	var req loginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -118,6 +119,7 @@ func newUserResponse(user db.User) userResponse {
 	return userResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,
+		Email:             user.Email,
 		PasswordChangedAt: user.PasswordChangedAt,
 		CreatedAt:         user.CreatedAt,
 	}
@@ -129,11 +131,12 @@ func newUserResponse(user db.User) userResponse {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
+//	@Param			request body createUserRequest true "query params"
 //	@Failure		400	{object}	utils.HTTPError
 //	@Failure		404	{object}	utils.HTTPError
 //	@Failure		500	{object}	utils.HTTPError
 //	@Success		200	{object}	userResponse
-//	@Router			/user/createuser [post]
+//	@Router			/api/v1/user/createuser [post]
 func CreateUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
