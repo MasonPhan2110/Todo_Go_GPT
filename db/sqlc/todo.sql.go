@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -23,11 +24,11 @@ INSERT INTO "todo" (
 `
 
 type CreateTaskParams struct {
-	UserID      int64     `json:"user_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Status      bool      `json:"status"`
-	Deadline    time.Time `json:"deadline"`
+	UserID      int64          `json:"user_id"`
+	Name        string         `json:"name"`
+	Description sql.NullString `json:"description"`
+	Status      bool           `json:"status"`
+	Deadline    time.Time      `json:"deadline"`
 }
 
 func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Todo, error) {

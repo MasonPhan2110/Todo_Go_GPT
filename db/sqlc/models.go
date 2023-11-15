@@ -5,6 +5,7 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -22,14 +23,14 @@ type Session struct {
 }
 
 type Todo struct {
-	ID          int64     `json:"id"`
-	UserID      int64     `json:"user_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Status      bool      `json:"status"`
-	Deadline    time.Time `json:"deadline"`
-	UpdateAt    time.Time `json:"update_at"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int64          `json:"id"`
+	UserID      int64          `json:"user_id"`
+	Name        string         `json:"name"`
+	Description sql.NullString `json:"description"`
+	Status      bool           `json:"status"`
+	Deadline    time.Time      `json:"deadline"`
+	UpdateAt    time.Time      `json:"update_at"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type User struct {
