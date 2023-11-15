@@ -55,6 +55,13 @@ func (server *Server) AddRoutes(c *gin.Engine) {
 	{
 		user.POST("login", server.Login)
 		user.POST("create", server.CreateUser)
+		user.POST("update", server.Update)
+	}
+
+	todo := v1.Group("todo")
+	{
+		todo.POST("create", server.CreateTask)
+		todo.GET("get", server.GetTasks)
 	}
 
 	// r.Use(middleware.AuthMiddleware(setting.AppSetting.TokenMaker))

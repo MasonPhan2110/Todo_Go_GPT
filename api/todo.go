@@ -3,7 +3,6 @@ package api
 import (
 	db "MasonPhan2110/Todo_Go_GPT/db/sqlc"
 	"MasonPhan2110/Todo_Go_GPT/utils"
-	"database/sql"
 	"net/http"
 	"time"
 
@@ -11,40 +10,48 @@ import (
 )
 
 type createTaskRequest struct {
-	UserID      int64          `json:"userid" binding:"required,min=1"`
-	Name        string         `json:"name" binding:"required"`
-	Description sql.NullString `json:"description" binding:"required"`
-	Deadline    time.Time      `json:"deadline" binding:"required"`
+	UserID      int64     `json:"user_id" binding:"required"`
+	Name        string    `json:"name" binding:"required"`
+	Description string    `json:"description" binding:"required"`
+	Deadline    time.Time `json:"deadline" binding:"required"`
 }
 
-type taskResponse struct {
-	ID          int64          `json:"id"`
-	UserID      int64          `json:"user_id"`
-	Name        string         `json:"name"`
-	Description sql.NullString `json:"description"`
-	Status      bool           `json:"status"`
-	Deadline    time.Time      `json:"deadline"`
-	UpdateAt    time.Time      `json:"update_at"`
-	CreatedAt   time.Time      `json:"created_at"`
+type createTaskResponse struct {
+	UserID      int64     `json:"user_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Status      bool      `json:"status"`
+	Deadline    time.Time `json:"deadline"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
-func newTaskResponse(task db.Todo) taskResponse {
-	return taskResponse{
-		ID:          task.ID,
+func newTaskResponse(task db.Todo) createTaskResponse {
+	return createTaskResponse{
 		UserID:      task.UserID,
 		Name:        task.Name,
 		Description: task.Description,
 		Status:      task.Status,
-		UpdateAt:    task.UpdateAt,
 		Deadline:    task.Deadline,
 		CreatedAt:   task.CreatedAt,
 	}
 }
 
+// CreateTask godoc
+//
+//	@Summary		Create new Task to Todo
+//	@Tags			todo
+//	@Accept			json
+//	@Produce		json
+//	@Param			request body createTaskRequest true "query params"
+//	@Failure		400	{object}	utils.HTTPError
+//	@Failure		404	{object}	utils.HTTPError
+//	@Failure		500	{object}	utils.HTTPError
+//	@Success		200	{object}	createTaskResponse
+//	@Router			/api/v1/todo/create [post]
 func (server *Server) CreateTask(ctx *gin.Context) {
 	var req createTaskRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		utils.NewError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
@@ -52,11 +59,11 @@ func (server *Server) CreateTask(ctx *gin.Context) {
 		UserID:      req.UserID,
 		Name:        req.Name,
 		Description: req.Description,
+		Status:      false,
 		Deadline:    req.Deadline,
 	}
 
 	task, err := db.DBStore.CreateTask(ctx, arg)
-
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
 			ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
@@ -70,17 +77,34 @@ func (server *Server) CreateTask(ctx *gin.Context) {
 }
 
 type getTaskRequest struct {
-	ID int64 `uri:"id" binding:"required,min=1"`
+	UserID int64 `json:"user_id" binding:"required"`
+	Limit  int32 `json:"limit" binding:"required"`
+	Offset int32 `json:"offset" binding:"required"`
 }
 
-func (server *Server) GetTask(ctx *gin.Context) {
+type getTaskResponse struct {
+	UserID      int64     `json:"user_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Status      bool      `json:"status"`
+	Deadline    time.Time `json:"deadline"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+func (server *Server) GetTasks(ctx *gin.Context) {
 	var req getTaskRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.NewError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	task, err := db.DBStore.GetTask(ctx, req.ID)
+	arg := db.ListTasksParams{
+		UserID: req.UserID,
+		Limit:  req.Limit,
+		Offset: req.Offset,
+	}
+
+	listTasks, err := db.DBStore.ListTasks(ctx, arg)
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
 			ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
@@ -89,8 +113,7 @@ func (server *Server) GetTask(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return
 	}
-	rsp := newTaskResponse(task)
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, listTasks)
 }
 
 func (server *Server) UpdateTask(ctx *gin.Context) {}

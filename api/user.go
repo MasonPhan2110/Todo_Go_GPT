@@ -170,3 +170,5 @@ func (server *Server) CreateUser(ctx *gin.Context) {
 	rsp := newUserResponse(user)
 	ctx.JSON(http.StatusOK, rsp)
 }
+
+func (server *Server) Update(ctx *gin.Context) {}
