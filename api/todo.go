@@ -69,7 +69,29 @@ func (server *Server) CreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
-func (server *Server) GetTask(ctx *gin.Context) {}
+type getTaskRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (server *Server) GetTask(ctx *gin.Context) {
+	var req getTaskRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	task, err := db.DBStore.GetTask(ctx, req.ID)
+	if err != nil {
+		if db.ErrorCode(err) == db.UniqueViolation {
+			ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		return
+	}
+	rsp := newTaskResponse(task)
+	ctx.JSON(http.StatusOK, rsp)
+}
 
 func (server *Server) UpdateTask(ctx *gin.Context) {}
 
