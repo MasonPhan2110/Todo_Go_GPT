@@ -17,7 +17,7 @@ INSERT INTO "user" (
     email
 ) VALUES (
     $1, $2, $3, $4
-) RETURNING id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at
+) RETURNING id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at, is_email_verified
 `
 
 type CreateUserParams struct {
@@ -44,12 +44,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdateAt,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.IsEmailVerified,
 	)
 	return i, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at FROM "user" 
+SELECT id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at, is_email_verified FROM "user" 
 WHERE username = $1 LIMIT 1
 `
 
@@ -65,12 +66,13 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 		&i.UpdateAt,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.IsEmailVerified,
 	)
 	return i, err
 }
 
 const getUserForUpdate = `-- name: GetUserForUpdate :one
-SELECT id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at FROM "user" 
+SELECT id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at, is_email_verified FROM "user" 
 WHERE username = $1 LIMIT 1
 FOR NO KEY UPDATE
 `
@@ -87,6 +89,7 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, username string) (User, 
 		&i.UpdateAt,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.IsEmailVerified,
 	)
 	return i, err
 }
@@ -95,7 +98,7 @@ const updateUserHashedPassword = `-- name: UpdateUserHashedPassword :one
 UPDATE "user"
 SET hashed_password = $2, update_at = (now())
 WHERE id = $1
-RETURNING id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at
+RETURNING id, username, hashed_password, full_name, email, update_at, password_changed_at, created_at, is_email_verified
 `
 
 type UpdateUserHashedPasswordParams struct {
@@ -115,6 +118,7 @@ func (q *Queries) UpdateUserHashedPassword(ctx context.Context, arg UpdateUserHa
 		&i.UpdateAt,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.IsEmailVerified,
 	)
 	return i, err
 }

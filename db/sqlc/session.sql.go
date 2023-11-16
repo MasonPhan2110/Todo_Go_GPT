@@ -15,7 +15,7 @@ import (
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (
   id,
-  username,
+  user_id,
   refresh_token,
   user_agent,
   client_ip,
@@ -23,12 +23,12 @@ INSERT INTO sessions (
   expires_at
 ) VALUES (
   $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, username, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at
+) RETURNING id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at
 `
 
 type CreateSessionParams struct {
 	ID           uuid.UUID `json:"id"`
-	Username     string    `json:"username"`
+	UserID       int64     `json:"user_id"`
 	RefreshToken string    `json:"refresh_token"`
 	UserAgent    string    `json:"user_agent"`
 	ClientIp     string    `json:"client_ip"`
@@ -39,7 +39,7 @@ type CreateSessionParams struct {
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
 	row := q.db.QueryRowContext(ctx, createSession,
 		arg.ID,
-		arg.Username,
+		arg.UserID,
 		arg.RefreshToken,
 		arg.UserAgent,
 		arg.ClientIp,
@@ -49,7 +49,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	var i Session
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.UserID,
 		&i.RefreshToken,
 		&i.UserAgent,
 		&i.ClientIp,
@@ -61,7 +61,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const getSession = `-- name: GetSession :one
-SELECT id, username, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at FROM sessions
+SELECT id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at FROM sessions
 WHERE id = $1 LIMIT 1
 `
 
@@ -70,7 +70,7 @@ func (q *Queries) GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	var i Session
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.UserID,
 		&i.RefreshToken,
 		&i.UserAgent,
 		&i.ClientIp,

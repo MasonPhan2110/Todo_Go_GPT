@@ -78,7 +78,7 @@ func (server *Server) Login(ctx *gin.Context) {
 
 	session, err := db.DBStore.CreateSession(ctx, db.CreateSessionParams{
 		ID:           refreshPayload.ID,
-		Username:     user.Username,
+		UserID:       user.ID,
 		RefreshToken: refreshToken,
 		UserAgent:    ctx.Request.UserAgent(),
 		ClientIp:     ctx.ClientIP(),
