@@ -14,7 +14,7 @@ type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateTask(ctx context.Context, arg CreateTaskParams) (Todo, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeleteAccount(ctx context.Context, id int64) error
+	DeleteTask(ctx context.Context, id int64) error
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetTask(ctx context.Context, id int64) (Todo, error)
 	GetTaskForUpdate(ctx context.Context, id int64) (Todo, error)

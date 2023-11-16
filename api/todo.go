@@ -132,7 +132,7 @@ func (server *Server) UpdateTask(ctx *gin.Context) {
 
 	authPayload := ctx.MustGet(middleware.AuthorizationPayloadKey).(*token.Payload)
 
-	if validUser, err := server.ValidUser(ctx, authPayload.UserId, req.ID); validUser == false && err != nil {
+	if validUser, err := server.ValidUser(ctx, authPayload.UserId, req.ID); !validUser && err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -178,7 +178,36 @@ func (server *Server) UpdateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
-func (server *Server) DeleteTask(ctx *gin.Context) {}
+type deleteTaskRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (server *Server) DeleteTask(ctx *gin.Context) {
+	var req deleteTaskRequest
+
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	authPayload := ctx.MustGet(middleware.AuthorizationPayloadKey).(*token.Payload)
+
+	if validUser, err := server.ValidUser(ctx, authPayload.UserId, req.ID); !validUser && err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	err := db.DBStore.DeleteTask(ctx, req.ID)
+	if err != nil {
+		if db.ErrorCode(err) == db.UniqueViolation {
+			ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, nil)
+}
 
 func (server *Server) ValidUser(ctx *gin.Context, userID int64, ID int64) (bool, error) {
 	task, err := db.DBStore.GetTask(ctx, ID)

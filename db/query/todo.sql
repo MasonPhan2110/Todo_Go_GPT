@@ -37,6 +37,6 @@ WHERE
   id = sqlc.arg(id)
 RETURNING *;
 
--- name: DeleteAccount :exec
+-- name: DeleteTask :exec
 DELETE FROM todo
 WHERE id = $1;

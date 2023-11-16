@@ -53,13 +53,13 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Todo, e
 	return i, err
 }
 
-const deleteAccount = `-- name: DeleteAccount :exec
+const deleteTask = `-- name: DeleteTask :exec
 DELETE FROM todo
 WHERE id = $1
 `
 
-func (q *Queries) DeleteAccount(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deleteAccount, id)
+func (q *Queries) DeleteTask(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteTask, id)
 	return err
 }
 
