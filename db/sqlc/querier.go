@@ -21,8 +21,7 @@ type Querier interface {
 	GetUser(ctx context.Context, username string) (User, error)
 	GetUserForUpdate(ctx context.Context, username string) (User, error)
 	ListTasks(ctx context.Context, arg ListTasksParams) ([]Todo, error)
-	UpdateDeadline(ctx context.Context, arg UpdateDeadlineParams) (Todo, error)
-	UpdateStatus(ctx context.Context, arg UpdateStatusParams) (Todo, error)
+	UpdateTask(ctx context.Context, arg UpdateTaskParams) (Todo, error)
 	UpdateUserHashedPassword(ctx context.Context, arg UpdateUserHashedPasswordParams) (User, error)
 }
 

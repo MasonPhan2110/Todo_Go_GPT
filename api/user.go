@@ -61,14 +61,14 @@ func (server *Server) Login(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, accessPayload, err := server.TokenMaker.CreateToken(req.Username, server.Config.AccessTokenDuration)
+	accessToken, accessPayload, err := server.TokenMaker.CreateToken(user.ID, server.Config.AccessTokenDuration)
 	if err != nil {
 		utils.NewError(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
 	refreshToken, refreshPayload, err := server.TokenMaker.CreateToken(
-		user.Username,
+		user.ID,
 		setting.AppSetting.RefreshTokenDuration,
 	)
 	if err != nil {

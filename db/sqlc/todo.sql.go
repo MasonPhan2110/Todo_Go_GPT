@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -151,48 +152,35 @@ func (q *Queries) ListTasks(ctx context.Context, arg ListTasksParams) ([]Todo, e
 	return items, nil
 }
 
-const updateDeadline = `-- name: UpdateDeadline :one
+const updateTask = `-- name: UpdateTask :one
 UPDATE todo
-SET deadline = $2
-WHERE id = $1
+SET
+  "name" = COALESCE($1, "name"),
+  description = COALESCE($2, description),
+  status = COALESCE($3, status),
+  deadline = COALESCE($4, deadline),
+  update_at = (now())
+WHERE
+  id = $5
 RETURNING id, user_id, name, description, status, deadline, update_at, created_at
 `
 
-type UpdateDeadlineParams struct {
-	ID       int64     `json:"id"`
-	Deadline time.Time `json:"deadline"`
+type UpdateTaskParams struct {
+	Name        sql.NullString `json:"name"`
+	Description sql.NullString `json:"description"`
+	Status      sql.NullBool   `json:"status"`
+	Deadline    sql.NullTime   `json:"deadline"`
+	ID          int64          `json:"id"`
 }
 
-func (q *Queries) UpdateDeadline(ctx context.Context, arg UpdateDeadlineParams) (Todo, error) {
-	row := q.db.QueryRowContext(ctx, updateDeadline, arg.ID, arg.Deadline)
-	var i Todo
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Name,
-		&i.Description,
-		&i.Status,
-		&i.Deadline,
-		&i.UpdateAt,
-		&i.CreatedAt,
+func (q *Queries) UpdateTask(ctx context.Context, arg UpdateTaskParams) (Todo, error) {
+	row := q.db.QueryRowContext(ctx, updateTask,
+		arg.Name,
+		arg.Description,
+		arg.Status,
+		arg.Deadline,
+		arg.ID,
 	)
-	return i, err
-}
-
-const updateStatus = `-- name: UpdateStatus :one
-UPDATE todo
-SET status = $2
-WHERE id = $1
-RETURNING id, user_id, name, description, status, deadline, update_at, created_at
-`
-
-type UpdateStatusParams struct {
-	ID     int64 `json:"id"`
-	Status bool  `json:"status"`
-}
-
-func (q *Queries) UpdateStatus(ctx context.Context, arg UpdateStatusParams) (Todo, error) {
-	row := q.db.QueryRowContext(ctx, updateStatus, arg.ID, arg.Status)
 	var i Todo
 	err := row.Scan(
 		&i.ID,

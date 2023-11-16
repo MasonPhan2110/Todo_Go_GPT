@@ -25,16 +25,16 @@ ORDER BY id
 LIMIT $2
 OFFSET $3;
 
--- name: UpdateStatus :one
+-- name: UpdateTask :one
 UPDATE todo
-SET status = $2
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateDeadline :one
-UPDATE todo
-SET deadline = $2
-WHERE id = $1
+SET
+  "name" = COALESCE(sqlc.narg(name), "name"),
+  description = COALESCE(sqlc.narg(description), description),
+  status = COALESCE(sqlc.narg(status), status),
+  deadline = COALESCE(sqlc.narg(deadline), deadline),
+  update_at = (now())
+WHERE
+  id = sqlc.arg(id)
 RETURNING *;
 
 -- name: DeleteAccount :exec
