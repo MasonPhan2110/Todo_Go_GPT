@@ -17,8 +17,14 @@ SELECT * FROM "user"
 WHERE username = $1 LIMIT 1
 FOR NO KEY UPDATE;
 
--- name: UpdateUserHashedPassword :one
+-- name: UpdateUser :one
 UPDATE "user"
-SET hashed_password = $2, update_at = (now())
-WHERE id = $1
-RETURNING *; 
+SET
+  hashed_password = COALESCE(sqlc.narg(hashed_password), hashed_password),
+  password_changed_at = COALESCE(sqlc.narg(password_changed_at), password_changed_at),
+  full_name = COALESCE(sqlc.narg(full_name), full_name),
+  email = COALESCE(sqlc.narg(email), email),
+  is_email_verified = COALESCE(sqlc.narg(is_email_verified), is_email_verified)
+WHERE
+  id = sqlc.arg(id)
+RETURNING *;

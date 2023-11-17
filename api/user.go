@@ -171,4 +171,38 @@ func (server *Server) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
+type verifyEmailRequest struct {
+	EmailId    int64  `json:"email_id,omitempty"`
+	SecretCode string `json:"secret_code,omitempty"`
+}
+
+type verifyEmailResponse struct {
+	IsVerified bool `json:"is_verified,omitempty"`
+}
+
+func (server *Server) VerifyEmail(ctx *gin.Context) {
+	var req verifyEmailRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	args := db.VerifyEmailTxParams{
+		EmailId:    req.EmailId,
+		SecretCode: req.SecretCode,
+	}
+
+	txResult, err := db.DBStore.VerifyEmailTx(ctx, args)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	rsp := verifyEmailResponse{
+		IsVerified: txResult.User.IsEmailVerified,
+	}
+	ctx.JSON(http.StatusOK, rsp)
+}
+
 func (server *Server) UpdateUser(ctx *gin.Context) {}

@@ -23,7 +23,7 @@ type Querier interface {
 	GetUserForUpdate(ctx context.Context, username string) (User, error)
 	ListTasks(ctx context.Context, arg ListTasksParams) ([]Todo, error)
 	UpdateTask(ctx context.Context, arg UpdateTaskParams) (Todo, error)
-	UpdateUserHashedPassword(ctx context.Context, arg UpdateUserHashedPasswordParams) (User, error)
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 	UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error)
 }
 
