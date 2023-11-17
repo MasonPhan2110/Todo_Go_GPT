@@ -82,13 +82,15 @@ func (server *Server) CreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
-type getTasksRequest struct {
+func (server *Server) GetTask(ctx *gin.Context) {}
+
+type listTasksRequest struct {
 	PageID   int32 `form:"page_id" binding:"required,min=1"`
 	PageSize int32 `form:"page_size" binding:"required,min=5,max=10"`
 }
 
-func (server *Server) GetTasks(ctx *gin.Context) {
-	var req getTasksRequest
+func (server *Server) ListTasks(ctx *gin.Context) {
+	var req listTasksRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.NewError(ctx, http.StatusBadRequest, err)
 		return

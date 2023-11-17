@@ -51,17 +51,25 @@ func (server *Server) AddRoutes(c *gin.Engine) {
 		swagger.GET("*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
+	auth := v1.Group("auth")
+	{
+		auth.POST("login", server.Login)
+		auth.POST("renew_access", server.RenewAccessToken)
+	}
+
 	user := v1.Group("user")
 	{
-		user.POST("login", server.Login)
 		user.POST("create", server.CreateUser)
-		user.POST("update", server.Update)
+		user.POST("update", server.UpdateUser)
 	}
 
 	todo := v1.Group("todo")
 	{
 		todo.POST("create", server.CreateTask)
-		todo.GET("get", server.GetTasks)
+		todo.GET("delete", server.DeleteTask)
+		todo.GET("get", server.GetTask)
+		todo.GET("list", server.ListTasks)
+		todo.POST("update", server.UpdateTask)
 	}
 
 	// r.Use(middleware.AuthMiddleware(setting.AppSetting.TokenMaker))

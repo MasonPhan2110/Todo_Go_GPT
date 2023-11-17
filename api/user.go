@@ -171,4 +171,4 @@ func (server *Server) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
-func (server *Server) Update(ctx *gin.Context) {}
+func (server *Server) UpdateUser(ctx *gin.Context) {}
